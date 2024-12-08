@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucchack/featurepages/add_slot_page.dart';
 import 'package:lucchack/providers/calander_time_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 
 class TimeCard extends StatefulWidget {
   Map tasks;
+  Map taskDescription;
   List tasksList6am;
   String time_for_card;
   Color dividerColor;
@@ -16,6 +18,7 @@ class TimeCard extends StatefulWidget {
   TimeCard(
       {super.key,
       required this.tasks,
+        required this.taskDescription,
       required this.tasksList6am,
       required this.time_for_card,
       required this.index ,
@@ -28,18 +31,34 @@ class TimeCard extends StatefulWidget {
 
 class _TimeCardState extends State<TimeCard> {
   late TextEditingController addTaskbtn;
+  late TextEditingController descriptionTaskbtn;
 
   @override
   void initState() {
-    
     super.initState();
-    addTaskbtn = TextEditingController();
+    assert(() {
+      addTaskbtn = TextEditingController();
+      descriptionTaskbtn = TextEditingController();
+      // widget.tasks = {
+      //   0: ["Task 1", "Task 2"],
+      //   1: ["Task 3"],
+      //   3: ["Task 4"]
+      // };
+      //print("Time card data------------------");
+      // print(widget.tasks);
+      // print(widget.taskDescription);
+      // print(widget.tasksList6am);
+      // print(widget.time_for_card);
+      //print(widget.index);
+      return true;
+    }());
   }
 
   @override
   void dispose() {
     super.dispose();
     addTaskbtn.dispose();
+    descriptionTaskbtn.dispose();
   }
   
   @override
@@ -75,8 +94,8 @@ class _TimeCardState extends State<TimeCard> {
               ),
               child: GestureDetector(
                   onTap: (() {
-                    // Navigator.push(context, MaterialPageRoute(builder: ((context) => AddTask(TappedIndex: widget.index))));
-                    addTask(widget.index);
+                    Navigator.push(context, MaterialPageRoute(builder: ((context) => AddSlotPage())));
+                    //addTask(widget.index);
                     
                   }),
                   child:  Icon(
@@ -153,7 +172,7 @@ class _TimeCardState extends State<TimeCard> {
                 const SizedBox(height: 16), // Spacing between the fields
                 // Description TextField
                 TextField(
-                  controller: addTaskbtn,
+                  controller: descriptionTaskbtn ?? TextEditingController(),
                   maxLines: 5, // Larger height for description
                   decoration: const InputDecoration(
                     hintText: "Enter description",
@@ -166,10 +185,14 @@ class _TimeCardState extends State<TimeCard> {
                   onPressed: () {
                     try{
                        widget.tasks[TappedIndex].add(addTaskbtn.text);
+                       widget.tasks[TappedIndex].add(descriptionTaskbtn.text);
+
 
                     }
                     on NoSuchMethodError{
                        widget.tasks[TappedIndex] =[addTaskbtn.text];
+                       widget.tasks[TappedIndex] =[descriptionTaskbtn.text];
+
                     }
                     // ignore: empty_catches
                     catch(e){
@@ -202,6 +225,8 @@ class _TimeCardState extends State<TimeCard> {
               TextButton(
                   onPressed: () {
                     widget.tasks[index].remove(addTaskbtn.text);
+                     widget.tasks[index].remove(descriptionTaskbtn.text);
+
                     // widget.tasks.remove(addTaskbtn.text);
                     Navigator.pop(context);
                   },

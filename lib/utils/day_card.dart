@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucchack/services/date_time_service.dart';
 import 'package:lucchack/utils/time_cards.dart';
-
+import 'package:intl/intl.dart';
 class DayCard extends StatefulWidget {
+  int index;
   DateTime selectedDate;
   Color cardColor;
   Color dividerColor;
   DayCard({
     Key? key,
+    required this.index,
     required this.selectedDate,
     required this.cardColor,
     required this.dividerColor,
@@ -20,12 +23,47 @@ class DayCard extends StatefulWidget {
 
 class _DayCardState extends State<DayCard> {
   var tasks = new Map();
-  
+
+  var taskDescription = new Map();
+
   List<String> tasksList6am = [];
   List<String> timeList = ["5 am" , "6 am" , "7 am" , "8 am", "9 am", "10 am" , "11 am", "12 pm", "1 pm", "2pm","3pm" ,"4pm" ,"5pm" , "6 pm" , "7 pm" , "8 pm", "9 pm" , "10 pm" , "11 pm" , " 12 am" , "1 am" , "2 am" , "3 am" , "4 am"];
   List<String> days = ["MONDAY" , "TUESDAY" , "WEDNESDAY" , "THURSDAY" , "FRIDAY" , "SATURDAY", "SUNDAY"];
   List<String> months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  @override
+  void initState() {
+    super.initState();
+    _initializeTasks();
+  }
 
+  String convertTime(DateTime inputDate) {
+    // Add 1 day to the provided date
+    DateTime updatedDate = DateTime(
+      inputDate.year,
+      inputDate.month,
+      inputDate.day + 1,
+    );
+
+    // Format the updated date to "yyyy-MM-dd"
+    String formattedDate = DateFormat("yyyy-MM-dd").format(updatedDate);
+    return formattedDate;
+  }
+
+  void _initializeTasks() async {
+    String result = convertTime(widget.selectedDate); // Convert to desired date format
+    try {
+      List<Map<int, List<String>>> fetchedTasks = await fetchAndFormatTasks(result);
+      print("indes x value task-----------------");
+      print(widget.index);
+      setState(() {
+        tasks = fetchedTasks[widget.index];
+
+      });
+    } catch (e) {
+      debugPrint("Error fetching tasks: $e");
+    }
+    debugPrint("Selected Date: ${widget.selectedDate}");
+  }
   @override
   Widget build(BuildContext context) {
     
@@ -79,7 +117,7 @@ class _DayCardState extends State<DayCard> {
                   scrollDirection: Axis.horizontal,
                   itemCount: timeList.length,
                   itemBuilder: (context , index){
-                    return TimeCard(tasks: tasks, tasksList6am: tasksList6am,  time_for_card: timeList[index], index: index, dividerColor: widget.dividerColor, );
+                    return TimeCard(tasks: tasks, taskDescription: taskDescription, tasksList6am: tasksList6am,  time_for_card: timeList[index], index: index, dividerColor: widget.dividerColor, );
                   }
                   )
               )

@@ -47,6 +47,7 @@ dependencies:
   sizer: ^3.0.5
   sliding_up_panel: ^2.0.0+1
   date_picker_timeline: ^1.2.6
+  flutter_typeahead: ^5.2.0
 
 
 dev_dependencies:

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:lucchack/featurepages/calender_page.dart';
+import 'package:lucchack/featurepages/side_drawer.dart';
 import 'package:lucchack/providers/time_provider.dart';
 import 'package:lucchack/utils/task_cards.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +18,7 @@ class TodayPage extends StatefulWidget {
 }
 
 class _TodayPageState extends State<TodayPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     // TODO: implement initState
@@ -31,6 +33,8 @@ class _TodayPageState extends State<TodayPage> {
   Widget build(BuildContext context) {
     print("Scaffold Built today's page");
     return Scaffold(
+      key: _scaffoldKey,
+        drawer: CustomDrawer(),
         body: SlidingUpPanel(
       maxHeight: 440,
       defaultPanelState: PanelState.OPEN,
@@ -46,7 +50,7 @@ class _TodayPageState extends State<TodayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Today's Tasks",
+                    "Today's Meetings",
                     style: GoogleFonts.poppins(
                         fontSize: 18, fontWeight: FontWeight.w600),
                   ),
@@ -73,7 +77,7 @@ class _TodayPageState extends State<TodayPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    TaskCard(clr: const Color.fromARGB(255, 173, 155, 140)),
+                    TaskCard(clr: const Color.fromARGB(255, 146, 139, 173)),
                     TaskCard(clr: const Color.fromARGB(255, 169, 172, 139))
                   ],
                 ),
@@ -82,6 +86,7 @@ class _TodayPageState extends State<TodayPage> {
           ],
         ),
       ),
+
       body: SafeArea(
         child: Container(
           height: ScreenUtil().screenHeight,
@@ -151,16 +156,21 @@ class _TodayPageState extends State<TodayPage> {
                         )
                       ],
                     ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(50),
-                        color: const Color.fromARGB(255, 153, 154, 157),
-                      ),
-                      child: const Center(
-                        child: Icon(CupertinoIcons.add),
+                    GestureDetector(
+                      onTap: () {
+                        _scaffoldKey.currentState?.openDrawer();
+                      },
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(50),
+                          color: const Color.fromARGB(255, 153, 154, 157),
+                        ),
+                        child: const Center(
+                          child: Icon(CupertinoIcons.line_horizontal_3),
+                        ),
                       ),
                     )
                   ],
@@ -225,7 +235,7 @@ class _TodayPageState extends State<TodayPage> {
                         color: Colors.grey,
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 0,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

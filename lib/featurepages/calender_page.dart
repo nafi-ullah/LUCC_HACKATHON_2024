@@ -153,10 +153,10 @@ class _CalenderPageState extends State<CalenderPage> {
                 Expanded(
                   child: ListView.builder(
                       itemCount: 4,
-                      itemBuilder: (context , index) {
+                      itemBuilder: (context , indexes) {
                         // add(Duration(days:1)).toString());
                         return Consumer<SelectedTimeChangeProvider>(builder: (context, value, child){
-                          return DayCard(selectedDate:value.selectedDate.add(Duration(days: index)), cardColor:  cardColors[index], dividerColor: dividerColors[index]);
+                          return DayCard(index: indexes, selectedDate:value.selectedDate.add(Duration(days: indexes)), cardColor:  cardColors[indexes], dividerColor: dividerColors[indexes]);
                            });
                       }
                     )
