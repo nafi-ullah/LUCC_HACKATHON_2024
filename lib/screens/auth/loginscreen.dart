@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:lucchack/constants/error_handling.dart';
 import 'package:lucchack/constants/theming.dart';
+import 'package:lucchack/featurepages/today_page.dart';
 import 'package:lucchack/router.dart';
 import 'package:lucchack/screens/homescreen/homescreen.dart';
 import 'package:lucchack/services/auth_services.dart';
@@ -37,17 +39,27 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
   }
 
-  void login() {
-    // authService.signInUser(
-    //     context: context,
-    //     email: emailController.text,
-    //     password: passwordController.text
-    // );
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+  void login() async{
+    print(emailController.text);
+    print(passwordController.text);
+    bool response = await authService.signInUser(
+      context: context,
+      email: emailController.text,
+      password: passwordController.text,
     );
+    print("The response is ----------------------------");
+    print(response);
+    // if (response) {
+    //   // Navigate to TodayPage if the sign-in is successful
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => const TodayPage()),
+    //   );
+    // } else {
+    //   // Optionally show a message if login failed
+    //   showSnackBar(context, 'Login failed. Please try again.');
+    // }
+
   }
 
   void loginEmployee() {
@@ -80,7 +92,13 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: Container(
                 height: MediaQuery.of(context).size.height / 3.5,
-                child: Image.asset("assets/images/img.png"),
+                child: SizedBox(
+                  width: 200, // Set the desired width
+                  child: Image.asset(
+                    "assets/images/img.png",
+                    fit: BoxFit.contain, // Adjust the fit property as needed
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -149,19 +167,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: MediaQuery.of(context).size.width,
                     child: ButtonWidget(
                       textSize: 20,
-                      btnText: "Login as Citizen",
+                      btnText: "Login",
                       onPress: login,
                     ),
                   ),
-                  SizedBox(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width,
-                    child: ButtonWidget(
-                      textSize: 20,
-                      btnText: "Login ",
-                      onPress: loginEmployee,
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 60,
+                  //   width: MediaQuery.of(context).size.width,
+                  //   child: ButtonWidget(
+                  //     textSize: 20,
+                  //     btnText: "Login ",
+                  //     onPress: loginEmployee,
+                  //   ),
+                  // ),
                   const SizedBox(
                     height: 20,
                   )

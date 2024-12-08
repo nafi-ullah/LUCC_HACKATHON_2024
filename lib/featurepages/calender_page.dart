@@ -111,7 +111,7 @@ class _CalenderPageState extends State<CalenderPage> {
               const SizedBox(height: 20,),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
-                  height: 100,
+                  height: 110,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
@@ -124,7 +124,7 @@ class _CalenderPageState extends State<CalenderPage> {
                     selectionColor:const Color.fromARGB(255, 147,139,174),
                     dateTextStyle: GoogleFonts.poppins(
                       color: Colors.grey,
-                      fontSize: 26
+                      fontSize: 22
                     ),
                     onDateChange: (date){
                       selectedTimeProvider.setSelectedDate(date);

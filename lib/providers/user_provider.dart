@@ -5,15 +5,12 @@ import 'package:lucchack/models/auth_model.dart';
 
 class UserProvider extends ChangeNotifier{
   User _user = User(
-      id: '',
-      username: '',
+      id: 0,
+      name: '',
       email: '',
-      profileName: '',
-      roleName: '',
-      stsId: '',
-      sts: '',
-      landfillId: '',
-      landfill:'',
+      password: '',
+      timezone: '',
+      profession: '',
       token: ''
   );
 

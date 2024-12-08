@@ -139,16 +139,34 @@ class _TimeCardState extends State<TimeCard> {
   Future addTask(int TappedIndex) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: const Text("Add Task"),
-            content: TextField(
-              controller: addTaskbtn,
+            title: const Text("Add Slot"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Title TextField
+                TextField(
+                  controller: addTaskbtn,
+                  decoration: const InputDecoration(
+                    hintText: "Enter title",
+                  ),
+                ),
+                const SizedBox(height: 16), // Spacing between the fields
+                // Description TextField
+                TextField(
+                  controller: addTaskbtn,
+                  maxLines: 5, // Larger height for description
+                  decoration: const InputDecoration(
+                    hintText: "Enter description",
+                  ),
+                ),
+              ],
             ),
             actions: [
               TextButton(
                   onPressed: () {
                     try{
                        widget.tasks[TappedIndex].add(addTaskbtn.text);
-                    
+
                     }
                     on NoSuchMethodError{
                        widget.tasks[TappedIndex] =[addTaskbtn.text];
@@ -157,16 +175,18 @@ class _TimeCardState extends State<TimeCard> {
                     catch(e){
 
                     }
-                    
+
                     finally{
-                    
+
                     Navigator.pop(context);
                     }
                   },
                   child: Text(
                     "Add",
                     style: GoogleFonts.poppins(color: Colors.black),
-                  ))
+                  )),
+
+
             ],
           ));
 

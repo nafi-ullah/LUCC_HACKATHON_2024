@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                  height: 50,
+                  height: 20,
                   alignment: Alignment.topLeft,
                   child: Image.asset("assets/images/img.png")
               ),

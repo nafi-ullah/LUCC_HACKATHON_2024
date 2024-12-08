@@ -1,62 +1,54 @@
 import 'dart:convert';
 
-class User{
-  final String id;
-  final String username;
+class User {
+  final int id;
+  final String name;
   final String email;
-  final String profileName;
-  final String roleName;
-  final String stsId;
-  final String landfillId;
-  final String sts;
-  final String landfill;
+  final String password;
+  final String timezone;
+  final String profession;
   final String token;
+  final String? notificationId;
 
   User({
     required this.id,
-    required this.username,
+    required this.name,
     required this.email,
-    required this.profileName,
-    required this.roleName,
-    required this.stsId,
-    required this.sts,
-    required this.landfillId,
-    required this.landfill,
-    required this.token});
+    required this.password,
+    required this.timezone,
+    required this.profession,
+    required this.token,
+    this.notificationId,
+  });
 
-// json serialization (parameter gula select kore bulb icon a click korar por option ashbe)
-  Map<String,dynamic> toMap(){
-    return{
+  // JSON serialization
+  Map<String, dynamic> toMap() {
+    return {
       'id': id,
-      'username': username,
+      'name': name,
       'email': email,
-      'profileName': profileName,
-      'roleName': roleName,
-      'stsId': stsId,
-      'sts': sts,
-      'landfillId': landfillId,
-      'landfill': landfill,
-      'token': token
+      'password': password,
+      'timezone': timezone,
+      'profession': profession,
+      'token': token,
+      'notificationId': notificationId,
     };
   }
-  factory User.fromMap(Map<String,dynamic>map){
+
+  factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['user']['_id'] ?? '',
-      username: map['user']['username'] ?? '',
-      email: map['user']['email'] ?? '',
-      profileName: map['user']['profileName'] ?? '',
-      roleName: map['user']['roleName'] ?? '',
-      stsId: map['user']['stsId'] ?? '',
-      sts: map['user']['sts'] ?? '',
-      landfillId: map['user']['landfillId'] ?? '',
-      landfill: map['user']['landfill'] ?? '',
+      id: map['id'] ?? 0,
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      password: map['password'] ?? '',
+      timezone: map['timezone'] ?? '',
+      profession: map['profession'] ?? '',
       token: map['token'] ?? '',
+      notificationId: map['notificationId'], // Nullable field
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory User.fromJson(String source) => User.fromMap(json.decode(source));
-
-
 }

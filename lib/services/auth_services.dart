@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lucchack/featurepages/today_page.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,7 @@ class AuthServices {
 
 
 
-  void signInUser({
+  Future<bool> signInUser({
     required BuildContext context,
     required String email,
     required String password,
@@ -35,6 +36,8 @@ class AuthServices {
             // 'Accept': '*/*'
           });
 
+      bool isSuccess = false;
+
 //      print(res.body);
       httpErrorHandle(
           response: res,
@@ -44,12 +47,15 @@ class AuthServices {
 
             SharedPreferences prefs = await SharedPreferences.getInstance();
             Map<String, dynamic> json = jsonDecode(res.body as String);
-            User loggeduser = User.fromMap(json);
+            User loggeduser = User.fromMap({
+              ...json['user'], // Spread the 'user' details
+              'token': json['token'], // Include the token
+            });
 
             print(loggeduser.id);
-            print(loggeduser.username);
+            print(loggeduser.name);
             print(loggeduser.email);
-            print(loggeduser.roleName);
+            print(loggeduser.timezone);
             print(loggeduser.token);
 
             Provider.of<UserProvider>(context, listen: false)
@@ -60,19 +66,19 @@ class AuthServices {
             final user = Provider.of<UserProvider>(context, listen: false).user;
 
             print(user.toJson());
-
+            isSuccess = true;
             //shared preference a jst token ta thakbe
-            Navigator.pushAndRemoveUntil(
-                context,
-                generateRoute(RouteSettings(name: HomeScreen.routeName)),
-                //MaterialPageRoute(builder: (context) => HomeScreen()), same as above
-                    (route) => false);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const TodayPage()),
+            );
           });
+      return isSuccess;
     } catch (e) {
       print(e.toString());
       showSnackBar(context, e.toString());
+      return false;
     }
   }
-
 
 }
