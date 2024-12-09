@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-
+import 'dart:convert';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 class AddSlotPage extends StatefulWidget {
   @override
   _AddSlotPageState createState() => _AddSlotPageState();
@@ -14,6 +15,11 @@ class _AddSlotPageState extends State<AddSlotPage> {
   TimeOfDay? endTime;
   DateTime? startDate;
   DateTime? endDate;
+  late IO.Socket socket;
+  TextEditingController messageController = TextEditingController();
+  TextEditingController roomController = TextEditingController();
+  String message = "";
+  String room = "";
 
   Future<void> pickDate(BuildContext context, bool isStartDate) async {
     final DateTime? picked = await showDatePicker(
@@ -52,6 +58,7 @@ class _AddSlotPageState extends State<AddSlotPage> {
   }
 
   Future<void> submitSlot() async {
+    sendMessage();
     if (startTime == null ||
         endTime == null ||
         startDate == null ||
@@ -81,7 +88,7 @@ class _AddSlotPageState extends State<AddSlotPage> {
      print("${endDateTime.toIso8601String()}");
 
     final response = await http.post(
-      Uri.parse('https://d4df-163-47-36-250.ngrok-free.app/slot/create'),
+      Uri.parse('https://efd9-163-47-36-250.ngrok-free.app/slot/create'),
       headers: {'Content-Type': 'application/json'},
       body: '''
       {
@@ -100,35 +107,87 @@ class _AddSlotPageState extends State<AddSlotPage> {
     print(response);
 
     if (response.statusCode == 201 || response.statusCode == 200) {
-      showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/added.gif',
-                  width: 100,
-                  height: 100,
-                ),
-                SizedBox(height: 16),
-                Text(
-                  "Slot is added",
-                  style: TextStyle(fontSize: 18, color: Colors.green),
-                ),
-              ],
-            ),
-          );
-
-
-        },
-      );
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Slot added. ")));
+      // showModalBottomSheet(
+      //   context: context,
+      //   builder: (context) {
+      //     return Container(
+      //       padding: EdgeInsets.all(20),
+      //       child: Column(
+      //         mainAxisSize: MainAxisSize.min,
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: [
+      //           Image.asset(
+      //             'assets/images/added.gif',
+      //             width: 100,
+      //             height: 100,
+      //           ),
+      //           SizedBox(height: 16),
+      //           Text(
+      //             "Slot is added",
+      //             style: TextStyle(fontSize: 18, color: Colors.green),
+      //           ),
+      //         ],
+      //       ),
+      //     );
+      //
+      //
+      //   },
+      // );
     } else {
       // Handle error
       print('Error: ${response.statusCode}');
+    }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    socket = IO.io('https://efd9-163-47-36-250.ngrok-free.app', <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.on('connect', (_) {
+      print('Connected to the server');
+    });
+
+    socket.on('message-recieve', (data) {
+      setState(() {
+        message = data['message'];
+      });
+      print("Received message: $message");
+    });
+
+    socket.emit('join_room', {'messid': "1234"});
+    //print("Joined room: $room");
+  }
+
+  void sendMessage() {
+    if (titleController.text.isNotEmpty && descriptionController.text.isNotEmpty) {
+      print("Hitted send message");
+
+      // Construct the message body as a JSON string
+      final messageBody = jsonEncode({
+        "title": titleController.text,
+        "body": descriptionController.text,
+      });
+
+      print("Message JSON: $messageBody");
+
+      // Emit the message to the socket server
+      socket.emit('message', {
+        'message': messageBody,
+        'room': roomController.text,
+      });
+
+      print("Message sent: ${titleController.text}");
+
+      // Optionally clear the controllers
+      // titleController.clear();
+      // descriptionController.clear();
     }
   }
 

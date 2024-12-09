@@ -11,6 +11,8 @@ class UserSearchPage extends StatefulWidget {
 class _UserSearchPageState extends State<UserSearchPage> {
   List users = [];
   Map<String, dynamic>? selectedUser;
+  List<int> guestIds = [1];
+  String? description;
 
   @override
   void initState() {
@@ -20,7 +22,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
   Future<void> fetchUsers() async {
     final response = await http.get(
-      Uri.parse('https://d4df-163-47-36-250.ngrok-free.app/auth/users'),
+      Uri.parse('https://efd9-163-47-36-250.ngrok-free.app/auth/users'),
     );
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -48,7 +50,150 @@ class _UserSearchPageState extends State<UserSearchPage> {
     }
   }
 
-  Widget buildSlots(List slots) {
+  void selectGuest(String email) {
+    final user = users.firstWhere((user) => user['email'] == email, orElse: () => null);
+    if (user != null && !guestIds.contains(user['id'])) {
+      setState(() {
+        guestIds.add(user['id']);
+      });
+    }
+  }
+
+  Future<void> createMeeting(int slotId, int hostId, selectedDate) async {
+
+    final requestBody = {
+      "description": description,
+      "date": selectedDate,
+      "slotId": slotId,
+      "hostId": hostId,
+      "guestIds": guestIds,
+    };
+
+    print("Request body------------------");
+    print(requestBody);
+
+    final response = await http.post(
+      Uri.parse('https://efd9-163-47-36-250.ngrok-free.app/meet/create'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Meeting created successfully')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to create meeting')),
+      );
+    }
+  }
+
+
+  void showRequestMeetingModal(BuildContext context, Map<String, dynamic> slot, int userId) {
+    DateTime? selectedDate;
+
+    Future<void> pickDate(BuildContext context) async {
+      final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2100),
+      );
+
+      if (pickedDate != null) {
+        setState(() {
+          selectedDate = pickedDate;
+        });
+      }
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Request for Meeting',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    selectedDate != null
+                        ? 'Selected Date: ${selectedDate!.toLocal()}'.split(' ')[0]
+                        : 'No Date Selected',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  TextButton(
+                    onPressed: () => pickDate(context),
+                    child: Text('Select Date'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              TextField(
+                onChanged: (value) => description = value,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              TypeAheadField<String>(
+                suggestionsCallback: (query) => getEmailSuggestions(query),
+                itemBuilder: (context, suggestion) {
+                  return ListTile(
+                    title: Text(suggestion),
+                  );
+                },
+                onSelected: (email) {
+                  selectGuest(email); // Add the selected guest email to the guestIds list
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('$email added to guest list')),
+                  );
+                },
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Add guest email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  createMeeting(slot['id'], userId, selectedDate);
+                },
+                child: Text('Send Request'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget buildSlots(List slots, int userId) {
     return SingleChildScrollView(
       child: ListView.builder(
         shrinkWrap: true,
@@ -75,6 +220,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                 ],
               ),
               trailing: Icon(Icons.schedule, color: Color(0xFF928BAD)),
+              onTap: () => showRequestMeetingModal(context, slot, userId),
             ),
           );
         },
@@ -138,7 +284,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
               if (selectedUser!['slots'].isEmpty)
                 Text('No slots available', style: TextStyle(color: Colors.grey))
               else
-                Expanded(child: buildSlots(selectedUser!['slots'])),
+                Expanded(child: buildSlots(selectedUser!['slots'], selectedUser!['id'])),
             ],
           ],
         ),

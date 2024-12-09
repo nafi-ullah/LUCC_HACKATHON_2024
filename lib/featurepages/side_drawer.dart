@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lucchack/featurepages/Notifications.dart';
+import 'package:lucchack/featurepages/ai_advanced_search.dart';
 import 'package:lucchack/screens/operations/find_hosts.dart';
+import 'package:lucchack/screens/operations/meeting_page.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
@@ -53,9 +56,12 @@ class CustomDrawer extends StatelessWidget {
                 children: [
                   _buildDrawerItem(
                     icon: Icons.calendar_today,
-                    text: 'Appointments',
+                    text: 'Pending Request',
                     onTap: () {
-                      print('Appointments clicked');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MeetingPage()),
+                      );
                     },
                   ),
                   _buildDrawerItem(
@@ -72,16 +78,23 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   _buildDrawerItem(
                     icon: Icons.star,
-                    text: 'Starred',
+                    text: 'AI Host Find',
                     onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SearchSlotPage()),
+                      );
                       print('Starred clicked');
                     },
                   ),
                   _buildDrawerItem(
-                    icon: Icons.access_time,
+                    icon: Icons.notifications,
                     text: 'Recents',
                     onTap: () {
-                      print('Recents clicked');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SocketPage()),
+                      );
                     },
                   ),
                 ],

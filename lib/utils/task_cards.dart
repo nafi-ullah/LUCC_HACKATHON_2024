@@ -3,8 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
 class TaskCard extends StatelessWidget {
+  String txt;
   Color clr ;
-   TaskCard({super.key, required this.clr});
+   TaskCard({super.key, required this.clr, required this.txt});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class TaskCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("You have a \nmeeting", 
+              Text("${txt}",
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 28,

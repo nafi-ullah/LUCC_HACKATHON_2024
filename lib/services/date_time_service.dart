@@ -23,7 +23,7 @@ class DatTimeServices {
 }
 
   Future<List<Map<int, List<String>>>> fetchAndFormatTasks(String date) async {
-    final String apiUrl = "https://d4df-163-47-36-250.ngrok-free.app/slot/date/2024-12-09/user/1";
+    final String apiUrl = "https://efd9-163-47-36-250.ngrok-free.app/slot/date/2024-12-09/user/1";
 
     try {
       // Hit the API

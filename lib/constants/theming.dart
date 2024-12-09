@@ -4,7 +4,7 @@ const kBackgroundColor =  Color.fromRGBO(255, 255, 255, 1.0);
 const kPrimaryColor = Color.fromRGBO(26, 67, 78, 1);
 const ksecondaryHeaderColor = Color.fromRGBO(245, 239, 230, 1);
 const kPrimaryLightColor = Color.fromRGBO(79, 137, 159, 1.0);
-String uri= 'https://d4df-163-47-36-250.ngrok-free.app'; //10.42.0.107
+String uri= 'https://efd9-163-47-36-250.ngrok-free.app'; //10.42.0.107
 
 const appBarGradient = LinearGradient(
   colors: [

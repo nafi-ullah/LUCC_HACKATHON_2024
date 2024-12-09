@@ -77,8 +77,8 @@ class _TodayPageState extends State<TodayPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    TaskCard(clr: const Color.fromARGB(255, 146, 139, 173)),
-                    TaskCard(clr: const Color.fromARGB(255, 169, 172, 139))
+                    TaskCard(txt: "Meeting with new client" , clr: const Color.fromARGB(255, 146, 139, 173)),
+                    TaskCard(txt: "Tour plan meeting", clr: const Color.fromARGB(255, 169, 172, 139))
                   ],
                 ),
               ),
