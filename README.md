@@ -1,16 +1,33 @@
-# lucchack
+# Shakkhat Mobile App
 
-A new Flutter project.
+Shakkhat is a beautifully designed meeting scheduling app that allows users to add their available time slots to a calendar, view others' free slots, and book appointments seamlessly.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+### Dashboard
+- **Daily Schedule Overview**: Users can view their daily meeting schedules and updates on free slots.
+- **Add Free Slots**: Users can easily add their available time slots directly from the dashboard.
 
-A few resources to get you started if this is your first Flutter project:
+### Side Drawer
+- **Pending Requests**: Displays a list of guests who have requested a booking for any of the user's slots.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Host Search
+- **Dynamic Search**: Guests can search for hosts by their email and view the host's available slots.
+- **AI-Powered Host Finder**: Users can find hosts based on specific needs and emergencies using AI.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Real-time Notifications
+- Get instant updates for:
+    - Slot approval.
+    - Slot booking requests.
+
+## Tech Stack
+
+Shakkhat is built using Flutter and Dart, along with the following packages:
+- **Provider**: For state management.
+- **socket_io_client**: For real-time communication.
+- **shared_preferences**: For local data storage and caching.
+
+## How to Run
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
